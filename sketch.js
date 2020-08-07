@@ -11,7 +11,6 @@ var monkey_anim=[];
 var pointCheck=true;
 var pce=false;
 var is=false
-var button;
 for (var i=1; i<=10;i++){
     i===10?monkey_anim.push("Monkey_10.png"):monkey_anim.push("Monkey_0"+i+".png")
 }
@@ -21,32 +20,33 @@ function preload() {
     oi=loadImage("stone.png")
     bg=loadImage("jungle.jpg")
     ma4=loadImage("Monkey_04.png")
-    ji=loadImage("jump.png")
+    // ji=loadImage("jump.png")
 }
 
 
 function setup() {
     createCanvas(400, 400);
+    // resizeCanvas(800, 800);
     background1=createSprite(200,200,800,800)
     background1.addImage(bg)
     monkey = createSprite(60, 348, 20, 20);
     ground = createSprite(200, 356, 800, 8);
-    jumpButton = createSprite(350,100,20,20);
-    jumpButton.addImage(ji)
-    jumpButton.scale=0.37
-    ground.visible=false
+    // jumpButton = createSprite(350,100,20,20);
+    // jumpButton.addImage(ji)
+    // jumpButton.scale=0.37
+    // ground.visible=false
     monkey.addAnimation("monkey",ma)
     monkey.scale = 0.1;
-    background1.x = background1.width / 2
     // monkey.setCollider("rectangle", 0, 0, monkey.width - 10, monkey.height - 10);
 }
 function draw() {
     background(230);
     monkey.collide(ground)
     if (gameState) {
-       if(mousePressedOver(jumpButton)){
-           htmlJump()
-       }
+        $("#jump").on("click",function(){
+            if(gameState===1){
+                htmlJump()
+            }})
         background1.velocityX = -2.6 - (survivalTime / 100);
 
         monkey.velocityY += 0.55;
@@ -66,7 +66,7 @@ function draw() {
         }
         if(points%25===0 && points>0 && pointCheck && monkey.scale<0.12) {
             monkey.scale += 0.03;
-            console.log("a")
+            // console.log("a")
             is=true;
         }
         if(is){
@@ -80,11 +80,11 @@ function draw() {
             }
         }
         if(points%25===0){
-            console.log("b")
+            // console.log("b")
             pointCheck=false
         }else {
             pointCheck = true
-            console.log("c")
+            // console.log("c")
         }
         console.log(monkey.scale)
         obstacles.forEach(function (obstacle) {
@@ -93,11 +93,13 @@ function draw() {
                     obstacle.destroy();
                     monkey.scale = 0.1;
                     is=false
-                    console.log("not out")
+                    // console.log("not out")
                 }else{
                     gameState = 0;
-                    obstacle.destroy();
-                    console.log("out")
+                    // console.log("out")
+                    // monkey.setFrame=4
+                    // ma=ma4
+                    // monkey.addAnimation("monkey",ma4)
                 }
             }
             // monkey.collide(obstacle);
@@ -111,8 +113,7 @@ function draw() {
                 banana.destroy();
             }
         })
-    } else {
-        points=0
+    } else if(gameState===0){
         background1.velocityX = 0;
         obstacles.forEach(function (obstacle) {
             obstacle.velocityX = 0;
@@ -124,27 +125,33 @@ function draw() {
         // monkey.setFrame(0);
         monkey.velocityX = 0;
         textSize(35)
-        text("press r to restart", 38, 160)
-        if (keyDown("r")) {
-            gameState = 1;
-            survivalTime = 0;
-            obstacles.forEach(function (obstacle) {
-                obstacle.destroy();
-            })
-            bananas.forEach(function (banana) {
-                banana.destroy();
-            })
-        }
+        $( "#reload" ).click(function(){
+            if(gameState===0) {
+                points = 0
+                gameState = 1;
+                survivalTime = 0;
+                obstacles.forEach(function (obstacle) {
+                    obstacle.lifetime = 3
+                    obstacle.destroy();
+                })
+                bananas.forEach(function (banana) {
+                    banana.destroy();
+                })
+            }
+        });
     }
     // console.log(monkey.y)
     createEdgeSprites();
     drawSprites();
     textSize(26)
     text("Survival Time = " + Math.round(survivalTime) + "\npoints = " + points, 17, 25)
+    if(gameState===0){
+        text("press reset button to restart", 38, 160)
+    }
 }
 
 function spawnObstacle() {
-    if (World.frameCount % 450 === 0) {
+    if (World.frameCount % 200 === 0) {
         var obstacle = createSprite(405, 340, 20, 20)
         obstacle.addImage(oi);
         obstacle.scale = 0.12
