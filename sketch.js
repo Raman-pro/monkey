@@ -152,6 +152,7 @@ function draw() {
             bananas.forEach(function (banana) {
                 banana.destroy();
             })
+            monkey.addAnimation("monkey",ma)
         }
     }
     // console.log(monkey.y)
