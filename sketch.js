@@ -34,7 +34,7 @@ function setup() {
     // jumpButton = createSprite(350,100,20,20);
     // jumpButton.addImage(ji)
     // jumpButton.scale=0.37
-    // ground.visible=false
+    ground.visible=false
     monkey.addAnimation("monkey",ma)
     monkey.scale = 0.1;
     // monkey.setCollider("rectangle", 0, 0, monkey.width - 10, monkey.height - 10);
@@ -42,6 +42,7 @@ function setup() {
 function draw() {
     background(230);
     monkey.collide(ground)
+    fill("white")
     if (gameState) {
         $("#jump").on("click",function(){
             if(gameState===1){
@@ -99,7 +100,7 @@ function draw() {
                     // console.log("out")
                     // monkey.setFrame=4
                     // ma=ma4
-                    // monkey.addAnimation("monkey",ma4)
+                    monkey.addAnimation("monkey",ma4)
                 }
             }
             // monkey.collide(obstacle);
@@ -137,8 +138,21 @@ function draw() {
                 bananas.forEach(function (banana) {
                     banana.destroy();
                 })
+                monkey.addAnimation("monkey",ma)
             }
         });
+        if(keyDown("r")) {
+            points = 0
+            gameState = 1;
+            survivalTime = 0;
+            obstacles.forEach(function (obstacle) {
+                obstacle.lifetime = 3
+                obstacle.destroy();
+            })
+            bananas.forEach(function (banana) {
+                banana.destroy();
+            })
+        }
     }
     // console.log(monkey.y)
     createEdgeSprites();
@@ -146,7 +160,7 @@ function draw() {
     textSize(26)
     text("Survival Time = " + Math.round(survivalTime) + "\npoints = " + points, 17, 25)
     if(gameState===0){
-        text("press reset button to restart", 38, 160)
+        text("press reset button or\n 'r' key to restart", 38, 160)
     }
 }
 
@@ -177,13 +191,13 @@ function htmlJump(){
         if (monkey.y > 315.2) {
             monkey.velocityY = -12;
         }
-        if (monkey.y < 314) {
+        if (monkey.y < 315.2) {
             monkey.addAnimation("monkey",ma)
         } else {
             monkey.addImage(ma4)
         }
     }
-    if(is){
+    else if(is){
         if ( monkey.y > 310) {
             monkey.velocityY = -12;
         }
